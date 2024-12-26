@@ -1,0 +1,7 @@
+.MuiTableRow-root:nth-child(even) {
+  background-color: #f2f2f2; /* Light gray */
+}
+
+.MuiTableRow-root:nth-child(odd) {
+  background-color: #fff; /* White */
+}
