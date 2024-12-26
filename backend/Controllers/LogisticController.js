@@ -67,7 +67,7 @@ exports.createLogistics = async (req, res) => {
 
 exports.getAllLogistics = async (req, res) => {
   try {
-    const logistics = await Logistics.find().populate("orderId");
+    const logistics = await Logistic.find().populate("orderId");
     res.status(200).json(logistics);
   } catch (err) {
     res.status(500).json({
@@ -118,7 +118,7 @@ exports.updateLogistics = async (req, res) => {
         paymentType,
         amount,
       },
-      { new: true, runValidators: true },
+      { new: true, runValidators: true }
     );
 
     if (!updatedLogistics) {

@@ -3,10 +3,10 @@ const mongoose = require("mongoose");
 const PaymentSchema = new mongoose.Schema(
   {
     orderId: {
-      // type: mongoose.Schema.Types.ObjectId,
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      // type: String,
       unique: true,
-      // ref: "Order",
+      ref: "Order",
       required: true,
     },
     paymentId: {

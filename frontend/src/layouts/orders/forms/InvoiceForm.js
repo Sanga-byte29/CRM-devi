@@ -13,7 +13,7 @@ import { WidthFull } from "@mui/icons-material";
 
 const InvoiceForm = () => {
   const { orderId, generateOrderId } = useOrderContext();
-  const [invoiceDate, setInvoiceDate] = useState(null);
+
   const [invoiceForms, setInvoiceForms] = useState([
     {
       id: Date.now(),
@@ -63,22 +63,21 @@ const InvoiceForm = () => {
       alert("Please fill in all required fields (Invoice Number, Invoice Date).");
       return;
     }
-
+    console.log(invoiceForms);
     try {
       // Map and prepare invoice data
-      const invoiceData = invoiceForms.map((form) => {
-        const formattedDate =
-          form.invoiceDate && dayjs(form.invoiceDate).isValid()
-            ? dayjs(form.invoiceDate).format("YYYY-MM-DD")
-            : null;
-
-        return {
-          orderId,
-          invoiceId: form.invoiceId || "",
-          invoiceNumber: form.invoiceNumber,
-          invoiceDate: formattedDate, // Always ensure valid date format
-        };
-      });
+      const invoiceData = invoiceForms.map((form) => ({
+        // const formattedDate =
+        //   form.invoiceDate && dayjs(form.invoiceDate).isValid()
+        //     ? dayjs(form.invoiceDate).format("YYYY-MM-DD")
+        //     : null;
+        // return {
+        orderId,
+        invoiceId: form.invoiceId || "",
+        invoiceNumber: form.invoiceNumber,
+        invoiceDate: form.invoiceDate, // Always ensure valid date format
+        // };
+      }));
 
       console.log("Invoice Data:", invoiceData);
 
@@ -88,7 +87,6 @@ const InvoiceForm = () => {
     } catch (error) {
       console.error("Error submitting the Invoice Form:", error);
 
-      // Provide better error feedback
       const errorMessage = error.response?.data?.message || "Failed to submit the invoice.";
       alert(errorMessage);
     }
@@ -126,112 +124,105 @@ const InvoiceForm = () => {
   }, [orderId, generateOrderId]);
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Grid item xs={12} md={12}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} px={2}>
-          <Typography variant="h4" fontWeight="bold" mt={4} mb={3}>
-            Invoice Details
-          </Typography>
-        </Box>
+    // <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <Grid item xs={12} md={12}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} px={2}>
+        <Typography variant="h4" fontWeight="bold" mt={4} mb={3}>
+          Invoice Details
+        </Typography>
+      </Box>
 
-        {/*looop through invoice forms */}
-        {invoiceForms.length > 0 &&
-          invoiceForms.map((form, index) => (
-            <Box
-              key={index}
-              mb={4}
-              border="1px solid #e0e0e0"
-              borderRadius="8px"
-              p={3}
-              mx={2}
-              bgcolor="#f9f9f9"
-            >
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    label="Order ID"
-                    name="orderId"
-                    disabled
-                    value={orderId || "Loading..."}
-                    InputProps={{ readOnly: true }}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    label="Invoice Number"
-                    fullWidth
-                    name="invoiceNumber"
-                    value={form.invoiceNumber}
-                    onChange={(e) => handleInputChange(e, form.id)}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    label="Invoice Attachment"
-                    type="file"
-                    fullWidth
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <i className="fas fa-file-alt"></i>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <DatePicker
-                    label="Invoice Date"
-                    value={form.invoiceDate ? dayjs(form.invoiceDate) : null}
-                    // name="materialDispatchedDate"
-                    type="date"
-                    sx={{ width: "100%" }}
-                    // onChange={(e) => handleInputChange(e, form.id)}
-                    onChange={(newValue) =>
-                      handleInputChange(
-                        {
-                          target: {
-                            name: "invoiceDate",
-                            value: newValue ? dayjs(newValue).format("YYYY-MM-DD") : "", // Convert dayjs object to ISO string
-                          },
-                        },
-                        form.id
-                      )
-                    }
-                    renderInput={(params) => <TextField {...params} fullWidth />}
-                    // InputLabelProps={{ shrink: true }}
-                    fullWidth
-                  />
-                </Grid>
-              </Grid>
-              <Box display="flex" justifyContent="flex-end" mt={2}>
-                <IconButton onClick={() => handleRemoveInvoiceForm(form.id)} color="error">
-                  <RemoveCircleIcon />
-                </IconButton>
-                <IconButton onClick={handleAddInvoiceForm} color="primary">
-                  <AddCircleIcon />
-                </IconButton>
-              </Box>
-            </Box>
-          ))}
-        <Box display="flex" justifyContent="center" mt={4}>
-          <Button
-            variant="contained"
-            style={{
-              display: "flex-start",
-              background: "linear-gradient(to right, #6a11cb, #2575fc)",
-              color: "#fff",
-              textTransform: "none",
-              padding: "8px 24px",
-            }}
-            onClick={handleSubmitInvoice}
+      {/*looop through invoice forms */}
+      {invoiceForms.length > 0 &&
+        invoiceForms.map((form) => (
+          <Box
+            key={form.id}
+            mb={4}
+            border="1px solid #e0e0e0"
+            borderRadius="8px"
+            p={3}
+            mx={2}
+            bgcolor="#f9f9f9"
           >
-            Submit Invoices
-          </Button>
-        </Box>
-      </Grid>
-    </LocalizationProvider>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Order ID"
+                  name="orderId"
+                  // disabled
+                  value={orderId || "Loading..."}
+                  InputProps={{ readOnly: true }}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Invoice Number"
+                  fullWidth
+                  name="invoiceNumber"
+                  value={form.invoiceNumber}
+                  onChange={(e) => handleInputChange(e, form.id)}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Invoice Attachment"
+                  type="file"
+                  fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <i className="fas fa-file-alt"></i>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Invoice Date"
+                  name="invoiceDate"
+                  type="date"
+                  value={form.invoiceDate}
+                  // name="materialDispatchedDate"
+
+                  sx={{ width: "100%" }}
+                  // onChange={(e) => handleInputChange(e, form.id)}
+                  onChange={(e) => handleInputChange(e, form.id)}
+                  InputLabelProps={{ shrink: true }}
+                  // renderInput={(params) => <TextField {...params} fullWidth />}
+                  // InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+              </Grid>
+            </Grid>
+            <Box display="flex" justifyContent="flex-end" mt={2}>
+              <IconButton onClick={() => handleRemoveInvoiceForm(form.id)} color="error">
+                <RemoveCircleIcon />
+              </IconButton>
+              <IconButton onClick={handleAddInvoiceForm} color="primary">
+                <AddCircleIcon />
+              </IconButton>
+            </Box>
+          </Box>
+        ))}
+      <Box display="flex" justifyContent="center" mt={4}>
+        <Button
+          variant="contained"
+          style={{
+            display: "flex-start",
+            background: "linear-gradient(to right, #6a11cb, #2575fc)",
+            color: "#fff",
+            textTransform: "none",
+            padding: "8px 24px",
+          }}
+          onClick={handleSubmitInvoice}
+        >
+          Submit Invoices
+        </Button>
+      </Box>
+    </Grid>
+    // </LocalizationProvider>
   );
 };
 

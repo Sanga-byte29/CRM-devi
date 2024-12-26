@@ -39,9 +39,17 @@ exports.createPayments = async (req, res) => {
           },
         });
       }
+      //find the matching order
+      const order = await Order.findOne({ orderId: orderId });
+
+      if (!order) {
+        return res
+          .status(400)
+          .json({ message: `Order with ID ${orderId} not found.` });
+      }
 
       const newPayment = new Payment({
-        orderId,
+        orderId: order._id,
         paymentType,
         paymentDate: new Date(paymentDate),
         paymentMethod,
@@ -115,7 +123,7 @@ exports.updatePayment = async (req, res) => {
         amountReceived,
         notes,
       },
-      { new: true, runValidators: true },
+      { new: true, runValidators: true }
     );
 
     if (!updatedPayment) {

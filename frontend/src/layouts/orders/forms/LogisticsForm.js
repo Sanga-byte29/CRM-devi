@@ -38,7 +38,7 @@ const LogisticsForm = () => {
       alert("Order ID is still generating. Please wait.");
       return;
     }
-
+    console.log(logisticsForms);
     const isValid = logisticsForms.every(
       (form) =>
         form.itemsDispatched &&
@@ -51,7 +51,6 @@ const LogisticsForm = () => {
 
     if (!isValid) {
       alert("Please fill in all required fields.");
-      return;
     }
 
     try {

@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 const InvoiceSchema = new mongoose.Schema(
   {
     orderId: {
-      // type: mongoose.Schema.Types.ObjectId,
-      // ref: "Order", // Reference to the Order schema
-      // // required: true,
-      type: String, // Ensure this is a string
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Order", // Reference to the Order schema
       required: true,
+      // type: String, // Ensure this is a string
+      // required: true,
       // unique: true,
     },
     invoiceId: {
@@ -25,7 +25,7 @@ const InvoiceSchema = new mongoose.Schema(
       // required: true,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Invoice", InvoiceSchema);
