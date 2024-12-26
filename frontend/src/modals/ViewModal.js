@@ -24,12 +24,17 @@ const modalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "95%",
+  width: "90%",
   maxWidth: 1350,
   bgcolor: "background.paper",
   boxShadow: 24,
-  p: 4,
+  // p: 3,
+  paddingLeft: 5,
+  paddingRight: 4,
+
   borderRadius: "8px",
+  height: "90vh", // Set a height for the modal
+  overflowY: "auto", // Enable vertical scrolling
 };
 
 function ViewModal({ order, invoice }) {
@@ -55,10 +60,6 @@ function ViewModal({ order, invoice }) {
 
   const handleClose = () => setOpen(false);
 
-  // const filteredOrders = invoices.filter((invoice) =>
-  //   invoice.orderId.toString().includes(searchQuery)
-  // );
-
   return (
     <div>
       <Button color="primary" onClick={handleOpen}>
@@ -66,180 +67,114 @@ function ViewModal({ order, invoice }) {
       </Button>
       <Modal open={open} onClose={handleClose}>
         <Box sx={modalStyle}>
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-            <Typography variant="h6" component="h2">
-              Order Details
-            </Typography>
-            <IconButton onClick={handleClose}>
-              <CloseIcon />
-            </IconButton>
-          </Box>
-
-          {/* Order Details */}
-          {/* <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Order ID:</strong> {order.orderId}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Order Date:</strong> {new Date(order.orderDate).toLocaleDateString()}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Booked By:</strong> {order.bookedBy}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Start Date:</strong> {new Date(order.startDate).toLocaleDateString()}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Completion Date:</strong>{" "}
-                {new Date(order.completionDate).toLocaleDateString()}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Payment Due Date:</strong>{" "}
-                {new Date(order.paymentDueDate).toLocaleDateString()}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Project Head:</strong> {order.projectHead}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Customer ID:</strong> {order.customer}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Customer Name:</strong> {order.customerName}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Address:</strong> {order.address || "N/A"}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Bill To:</strong> {order.billTo}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Quotation Number:</strong> {order.quotationNumber}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Quotation Date:</strong>{" "}
-                {new Date(order.quotationDate).toLocaleDateString()}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>PO/PI Number:</strong> {order.poPiNumber}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>PO/PI Date:</strong> {new Date(order.poPiDate).toLocaleDateString()}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Transportation Cost:</strong> {order.transportationCost}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Amount with GST:</strong> {order.amountWithGST}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Total Amount:</strong> {order.totalAmount}
-              </Typography>
-            </Grid>
-          </Grid> */}
-          <Grid
-            container
-            spacing={2}
+          <Box
             sx={{
-              border: "1px solid #e0e0e0 !important", // Add border around the grid
-              borderRadius: "8px !important", // Rounded corners
-              padding: "16px !important", // Padding inside the container
-              backgroundColor: "#f9f9f9 !important", // Light background
+              position: "sticky",
+              top: 1,
+              backgroundColor: "#a9a9a9!important",
+              paddingLeft: "16px !important",
+              paddingRight: "16px !important",
+              borderRadius: "1px !important",
+              // padding: "1px  !important",
+              zIndex: 1,
+              width: "100% !important",
             }}
           >
-            {[
-              { label: "Order ID", value: order.orderId },
-              { label: "Order Date", value: new Date(order.orderDate).toLocaleDateString() },
-              { label: "Booked By", value: order.bookedBy },
-              { label: "Start Date", value: new Date(order.startDate).toLocaleDateString() },
-              {
-                label: "Completion Date",
-                value: new Date(order.completionDate).toLocaleDateString(),
-              },
-              {
-                label: "Payment Due Date",
-                value: new Date(order.paymentDueDate).toLocaleDateString(),
-              },
-              { label: "Project Head", value: order.projectHead },
-              { label: "Customer ID", value: order.customer },
-              { label: "Customer Name", value: order.customerName },
-              { label: "Address", value: order.address || "N/A" },
-              { label: "Bill To", value: order.billTo },
-              { label: "Quotation Number", value: order.quotationNumber },
-              {
-                label: "Quotation Date",
-                value: new Date(order.quotationDate).toLocaleDateString(),
-              },
-              { label: "PO/PI Number", value: order.poPiNumber },
-              { label: "PO/PI Date", value: new Date(order.poPiDate).toLocaleDateString() },
-              { label: "Transportation Cost", value: order.transportationCost },
-              { label: "Amount with GST", value: order.amountWithGST },
-              { label: "Total Amount", value: order.totalAmount },
-            ].map((field, index) => (
-              <Grid
-                item
-                xs={4} // Each row will have three items (12/4 = 3)
-                key={index}
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography
+                variant="h6"
+                component="h2"
                 sx={{
-                  paddingBottom: "8px !important",
-                  paddingRight: "8px !important",
-                  marginBottom: "8px !important",
-                  borderBottom: "1px solid #e0e0e0 !important",
-                  borderRight: "1px solid #e0e0e0 !important",
-                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1) !important", // Shadow for each field
-                  borderRadius: "8px !important", // Slightly rounded corners for shadow
-                  backgroundColor: "#f2f2f2 !important",
+                  color: "black  !important",
+                  // paddingLeft: "16px !important",
+                  paddingRight: "16px !important",
+                  borderRadius: "8px !important",
+                  // width: "100% !important",
+                  letterSpacing: "3px",
                 }}
               >
-                <Typography
-                  variant="body1"
+                ORDER DETAILS
+              </Typography>
+              <IconButton onClick={handleClose}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </Box>
+          <Box sx={{ mt: 4 }}>
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                border: "1px solid #e0e0e0 !important", // Add border around the grid
+                borderRadius: "8px !important", // Rounded corners
+                padding: "16px !important", // Padding inside the container
+                backgroundColor: "#f9f9f9 !important", // Light background
+              }}
+            >
+              {[
+                { label: "Order ID", value: order.orderId },
+                { label: "Order Date", value: new Date(order.orderDate).toLocaleDateString() },
+                { label: "Booked By", value: order.bookedBy },
+                { label: "Start Date", value: new Date(order.startDate).toLocaleDateString() },
+                {
+                  label: "Completion Date",
+                  value: new Date(order.completionDate).toLocaleDateString(),
+                },
+                {
+                  label: "Payment Due Date",
+                  value: new Date(order.paymentDueDate).toLocaleDateString(),
+                },
+                { label: "Project Head", value: order.projectHead },
+                { label: "Customer ID", value: order.customer },
+                { label: "Customer Name", value: order.customerName },
+                { label: "Address", value: order.address || "N/A" },
+                { label: "Bill To", value: order.billTo },
+                { label: "Quotation Number", value: order.quotationNumber },
+                {
+                  label: "Quotation Date",
+                  value: new Date(order.quotationDate).toLocaleDateString(),
+                },
+                { label: "PO/PI Number", value: order.poPiNumber },
+                { label: "PO/PI Date", value: new Date(order.poPiDate).toLocaleDateString() },
+                { label: "Transportation Cost", value: order.transportationCost },
+                { label: "Amount with GST", value: order.amountWithGST },
+                { label: "Total Amount", value: order.totalAmount },
+              ].map((field, index) => (
+                <Grid
+                  item
+                  xs={4} // Each row will have three items (12/4 = 3)
+                  key={index}
                   sx={{
-                    display: "flex !important",
-                    justifyContent: "space-between !important", // Aligns label and value
-                    fontFamily: "Roboto, Arial, sans-serif !important", // Thin and clean font
-                    fontWeight: "200 !important", // Makes the font lighter
+                    paddingBottom: "8px !important",
+                    paddingRight: "8px !important",
+                    marginBottom: "8px !important",
                   }}
                 >
-                  <span style={{ fontWeight: 400 }}>{field.label}:</span> {field.value}{" "}
-                  {/* {field.value} */}
-                </Typography>
-              </Grid>
-            ))}
-          </Grid>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontFamily: "Roboto, Arial, sans-serif !important", // Change font type
+                      fontWeight: "500 !important", // Header in gray
+                      color: "#757575 !important", // Gray color for headers
+                      marginBottom: "8px !important", // Space between header and content
+                    }}
+                  >
+                    {field.label}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontFamily: "Arial, sans-serif !important", // Thin and clean font
+                      fontWeight: "400 !important", // Regular weight for content
+                      color: "#000 !important", // Black color for field values
+                    }}
+                  >
+                    {field.value}
+                  </Typography>
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
 
           {/* Invoice Details */}
           <Box mt={3}>
@@ -269,22 +204,6 @@ function ViewModal({ order, invoice }) {
                     </TableCell>
                   </TableRow>
                 </TableHead>
-                {/* <TableBody>
-                  {filteredOrders.map((invoice, index) => (
-                    <TableRow key={index}>
-                      <TableCell style={{ textAlign: "center" }}>{invoice.orderId}</TableCell>
-                      <TableCell style={{ textAlign: "center" }}>
-                        {invoice.invoiceId || "N/A"}
-                      </TableCell>
-                      <TableCell style={{ textAlign: "center" }}>
-                        {invoice.invoiceNumber || "N/A"}
-                      </TableCell>
-                      <TableCell style={{ textAlign: "center" }}>
-                        {new Date(invoice.invoiceDate).toLocaleDateString() || "N/A"}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody> */}
               </Table>
             </TableContainer>
           </Box>

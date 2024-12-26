@@ -51,43 +51,6 @@ exports.createInvoice = async (req, res) => {
   }
 };
 
-// exports.getAllInvoices = async (req, res) => {
-//   try {
-//     const invoices = await Invoice.find().populate("orderId");
-//     res.status(200).json(invoices);
-//   } catch (err) {
-//     res
-//       .status(500)
-//       .json({ message: "Error fetching invoices", error: err.message });
-//   }
-// };
-// exports.getInvoices = async (req, res) => {
-//   try {
-//     // Extract query parameters for filtering
-//     const { orderId, invoiceId, invoiceNumber } = req.query;
-
-//     // Build a query object based on the filters provided
-//     const query = {};
-//     if (orderId) query.orderId = orderId;
-//     if (invoiceId) query.invoiceId = invoiceId;
-//     if (invoiceNumber) query.invoiceNumber = invoiceNumber;
-
-//     // Fetch invoices from the database based on the query
-//     const invoices = await Invoice.find(query).populate("orderId"); // Populate orderId if needed
-
-//     if (!invoices || invoices.length === 0) {
-//       return res.status(404).json({ message: "No invoices found." });
-//     }
-
-//     // Return the fetched invoices
-//     res.status(200).json(invoices);
-//   } catch (err) {
-//     console.error("Error fetching invoices:", err);
-//     res
-//       .status(500)
-//       .json({ message: "Error fetching invoices", error: err.message });
-//   }
-// };
 exports.getInvoices = async (req, res) => {
   try {
     const { orderId, invoiceId, invoiceNumber } = req.query;
@@ -109,6 +72,20 @@ exports.getInvoices = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error fetching invoices", error: err.message });
+  }
+};
+
+exports.getInvoiceByOrderId = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+    const invoices = await Invoice.find({
+      orderId: mongoose.Types.ObjectId(orderId),
+    });
+
+    res.status(200).json(invoices);
+  } catch (error) {
+    console.error("Error fetching invoices:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 

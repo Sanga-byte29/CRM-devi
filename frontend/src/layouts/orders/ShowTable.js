@@ -377,6 +377,7 @@ function OrderManagement() {
   const [showCreateOrder, setShowCreateOrder] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState("my request");
   const [searchQuery, setSearchQuery] = useState("");
+  const [invoicesbyOrd, setInvoicesbyOrd] = useState([]);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -391,6 +392,25 @@ function OrderManagement() {
   }, []);
 
   console.log(orders);
+
+  //fetch invoices
+  // useEffect(() => {
+  //   const fetchInvoices = async () => {
+  //     try {
+  //       const orderId = order._id; // Assuming order._id holds the ObjectId
+  //       const response = await axios.get(`/api/invoices/${orderId}`); // Replace with your API endpoint
+  //       setInvoices(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching invoices:", error);
+  //       // Handle error, e.g., display an error message to the user
+  //     }
+  //   };
+
+  //   // Fetch invoices only if order._id exists
+  //   if (order && order._id) {
+  //     fetchInvoices();
+  //   }
+  // }, [order._id]);
 
   // Fetch customers (separate useEffect)
   useEffect(() => {
@@ -610,17 +630,6 @@ function OrderManagement() {
                             flexGrow: 1,
                           }}
                         >
-                          {/* <Button
-                            variant="outlined"
-                            size="small"
-                            style={{
-                              color: "#1976d2",
-                              borderColor: "#1976d2",
-                            }}
-                            onClick={() => handleAction(order)}
-                          >
-                            View
-                          </Button> */}
                           <ViewModal
                             order={{
                               orderId: order.orderId,
@@ -641,10 +650,6 @@ function OrderManagement() {
                               transportationCost: order.transportationCost,
                               amountWithGST: order.amountWithGST,
                               totalAmount: order.totalAmount,
-
-                              email: customer.email || "N/A",
-                              phoneNumber: customer.contactNumber || "N/A",
-                              date: order.orderDate,
                             }}
                           />
                         </TableCell>
