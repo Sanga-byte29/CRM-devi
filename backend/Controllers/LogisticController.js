@@ -1,10 +1,10 @@
+const mongoose = require("mongoose");
 const Order = require("../Models/orders");
 const Logistic = require("../Models/logistics");
 exports.createLogistics = async (req, res) => {
   try {
     const logistics = req.body;
 
-    //custom check for array of objects
     if (!Array.isArray(logistics)) {
       return res
         .status(400)
@@ -24,7 +24,6 @@ exports.createLogistics = async (req, res) => {
         amount,
       } = logisticData;
 
-      //checkor missing required fields
       if (!orderId || !docketNumber || !materialDispatchedDate) {
         return res.status(400).json({
           message:
@@ -32,7 +31,6 @@ exports.createLogistics = async (req, res) => {
         });
       }
 
-      //find the matching order
       const order = await Order.findOne({ orderId: orderId });
 
       if (!order) {
@@ -41,11 +39,10 @@ exports.createLogistics = async (req, res) => {
           .json({ message: `Order with ID ${orderId} not found.` });
       }
 
-      //a new logistics entry
       const newLogistic = new Logistic({
         orderId: order._id,
         itemsDispatched,
-        materialDispatchedDate: new Date(materialDispatchedDate), // Convert to date
+        materialDispatchedDate: new Date(materialDispatchedDate),
         courierPartnerDetails,
         docketNumber,
         paymentType,
@@ -77,20 +74,28 @@ exports.getAllLogistics = async (req, res) => {
   }
 };
 
-exports.getLogisticsById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const logistics = await Logistics.findById(id).populate("orderId");
+exports.getLogisticsByOrderId = async (req, res) => {
+  const orderId = req.params.orderId;
+  const isObjectId = mongoose.Types.ObjectId.isValid(orderId);
 
-    if (!logistics) {
-      return res.status(404).json({ message: "Logistics entry not found" });
+  try {
+    const logistics = await Logistic.find(
+      isObjectId
+        ? { orderId: new mongoose.Types.ObjectId(orderId) }
+        : { orderId: orderId }
+    ).populate("orderId");
+
+    if (!logistics.length) {
+      return res.status(404).json({ message: "Logistics entries not found" });
     }
 
     res.status(200).json(logistics);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error fetching logistics entry", error: err.message });
+  } catch (error) {
+    console.error("Error fetching logistics entries:", error);
+    res.status(500).json({
+      message: "Error fetching logistics entries",
+      error: error.message,
+    });
   }
 };
 

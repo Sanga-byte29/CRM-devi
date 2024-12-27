@@ -14,7 +14,7 @@ import {
   TableCell,
   TableBody,
 } from "@mui/material";
-import PropTypes from "prop-types"; // Import PropTypes
+import PropTypes from "prop-types";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -28,34 +28,56 @@ const modalStyle = {
   maxWidth: 1350,
   bgcolor: "background.paper",
   boxShadow: 24,
-  // p: 3,
   paddingLeft: 5,
   paddingRight: 4,
 
   borderRadius: "8px",
-  height: "90vh", // Set a height for the modal
-  overflowY: "auto", // Enable vertical scrolling
+  height: "85vh",
+  overflowY: "auto",
 };
 
 function ViewModal({ order, invoice }) {
   const [open, setOpen] = useState(false);
   const [invoices, setInvoices] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [logistics, setLogistics] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    const fetchInvoices = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/invoices");
-        setInvoices(response.data);
-      } catch (error) {
-        console.error("Error fetching invoices:", error);
-      }
-    };
-    fetchInvoices();
-  }, []);
+  console.log(order.oid);
+
+  const fetchInvoices = async () => {
+    try {
+      // eslint-disable-next-line react/prop-types
+      const response = await axios.get(`http://localhost:8080/invoices/${order.oid}`);
+      setInvoices(response.data);
+    } catch (error) {
+      console.error("Error fetching invoices:", error);
+    }
+  };
+
+  const fetchPayments = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/payments/${order.oid}`);
+      setPayments(response.data);
+    } catch (error) {
+      console.error("Error fetching payments:", error);
+    }
+  };
+
+  const fetchLogistics = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/logistics/${order.oid}`);
+      setLogistics(response.data);
+    } catch (error) {
+      console.error("Error fetching logistics:", error);
+    }
+  };
 
   const handleOpen = () => {
     setOpen(true);
+    fetchInvoices(); //fetchinvoices when the modal opens
+    fetchPayments();
+    fetchLogistics();
   };
 
   const handleClose = () => setOpen(false);
@@ -75,7 +97,7 @@ function ViewModal({ order, invoice }) {
               paddingLeft: "16px !important",
               paddingRight: "16px !important",
               borderRadius: "1px !important",
-              // padding: "1px  !important",
+
               zIndex: 1,
               width: "100% !important",
             }}
@@ -86,10 +108,10 @@ function ViewModal({ order, invoice }) {
                 component="h2"
                 sx={{
                   color: "black  !important",
-                  // paddingLeft: "16px !important",
+
                   paddingRight: "16px !important",
                   borderRadius: "8px !important",
-                  // width: "100% !important",
+
                   letterSpacing: "3px",
                 }}
               >
@@ -100,15 +122,33 @@ function ViewModal({ order, invoice }) {
               </IconButton>
             </Box>
           </Box>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+            <Typography
+              variant="h6"
+              component="h2"
+              sx={{
+                color: "black  !important",
+
+                paddingRight: "16px !important",
+                borderRadius: "8px !important",
+                paddingLeft: "32px !important",
+
+                letterSpacing: "2px",
+              }}
+            >
+              Order Informations
+            </Typography>
+          </Box>
+
           <Box sx={{ mt: 4 }}>
             <Grid
               container
               spacing={2}
               sx={{
-                border: "1px solid #e0e0e0 !important", // Add border around the grid
-                borderRadius: "8px !important", // Rounded corners
-                padding: "16px !important", // Padding inside the container
-                backgroundColor: "#f9f9f9 !important", // Light background
+                border: "1px solid #e0e0e0 !important",
+                borderRadius: "8px !important",
+                padding: "16px !important",
+                backgroundColor: "#f9f9f9 !important",
               }}
             >
               {[
@@ -142,7 +182,7 @@ function ViewModal({ order, invoice }) {
               ].map((field, index) => (
                 <Grid
                   item
-                  xs={4} // Each row will have three items (12/4 = 3)
+                  xs={4}
                   key={index}
                   sx={{
                     paddingBottom: "8px !important",
@@ -153,10 +193,10 @@ function ViewModal({ order, invoice }) {
                   <Typography
                     variant="body2"
                     sx={{
-                      fontFamily: "Roboto, Arial, sans-serif !important", // Change font type
-                      fontWeight: "500 !important", // Header in gray
-                      color: "#757575 !important", // Gray color for headers
-                      marginBottom: "8px !important", // Space between header and content
+                      fontFamily: "Roboto, Arial, sans-serif !important",
+                      fontWeight: "500 !important",
+                      color: "#757575 !important",
+                      marginBottom: "8px !important",
                     }}
                   >
                     {field.label}
@@ -164,9 +204,9 @@ function ViewModal({ order, invoice }) {
                   <Typography
                     variant="body1"
                     sx={{
-                      fontFamily: "Arial, sans-serif !important", // Thin and clean font
-                      fontWeight: "400 !important", // Regular weight for content
-                      color: "#000 !important", // Black color for field values
+                      fontFamily: "Arial, sans-serif !important",
+                      fontWeight: "400 !important",
+                      color: "#000 !important",
                     }}
                   >
                     {field.value}
@@ -175,49 +215,360 @@ function ViewModal({ order, invoice }) {
               ))}
             </Grid>
           </Box>
-
-          {/* Invoice Details */}
+          {/* invoice details */}
           <Box mt={3}>
-            <Typography variant="h6" gutterBottom>
+            <Typography
+              variant="h6"
+              component="h2"
+              sx={{
+                color: "black !important",
+                paddingRight: "16px !important",
+                paddingLeft: "32px !important",
+                letterSpacing: "2px",
+              }}
+            >
               Invoice Details
             </Typography>
-            <TableContainer component={Paper} style={{ borderRadius: "8px" }}>
+            <TableContainer
+              component={Paper}
+              style={{
+                borderRadius: "8px",
+                width: "100%",
+                maxHeight: "60vh",
+                overflowY: "auto",
+              }}
+            >
               <Table style={{ tableLayout: "fixed", width: "100%" }}>
                 <TableHead>
                   <TableRow
-                    style={{
-                      background: "linear-gradient(to right, #6a11cb, #2575fc)",
-                      color: "#333",
+                    sx={{
+                      background: "linear-gradient(to right, #6a11cb, #2575fc) ",
                     }}
                   >
-                    <TableCell style={{ textAlign: "center", color: "white", width: "250px" }}>
-                      Order ID
-                    </TableCell>
-                    <TableCell style={{ textAlign: "center", color: "white", width: "250px" }}>
-                      Invoice ID
-                    </TableCell>
-                    <TableCell style={{ textAlign: "center", color: "white", width: "250px" }}>
-                      Invoice Number
-                    </TableCell>
-                    <TableCell style={{ textAlign: "center", color: "white", width: "250px" }}>
-                      Invoice Date
-                    </TableCell>
+                    {["Order ID", "Invoice ID", "Invoice Number", "Invoice Date"].map((header) => (
+                      <TableCell
+                        key={header}
+                        sx={{
+                          textAlign: "left",
+                          color: "white !important",
+                          width: "500px !important",
+                          fontWeight: "bold",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: "25%",
+                        }}
+                      >
+                        {header}
+                      </TableCell>
+                    ))}
                   </TableRow>
                 </TableHead>
+                <TableBody>
+                  {invoices.map((invoice, index) => (
+                    <TableRow key={index} hover>
+                      <TableCell
+                        sx={{
+                          textAlign: "left",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: "25%",
+                        }}
+                      >
+                        {order.orderId}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          textAlign: "left",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: "25%",
+                        }}
+                      >
+                        {invoice.invoiceId}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          textAlign: "left",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: "25%",
+                        }}
+                      >
+                        {invoice.invoiceNumber}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          textAlign: "left",
+                          maxWidth: "25%",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {new Date(invoice.invoiceDate).toLocaleDateString()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
               </Table>
             </TableContainer>
           </Box>
 
-          <Box mt={3} display="flex" justifyContent="flex-end">
-            <Button
-              variant="contained"
-              onClick={handleClose}
-              style={{ background: "#6a11cb", color: "white" }}
+          <Box mt={3}>
+            <Typography
+              variant="h6"
+              component="h2"
+              sx={{
+                color: "black !important",
+                paddingRight: "16px !important",
+                paddingLeft: "32px !important",
+                letterSpacing: "2px",
+              }}
             >
-              Close
-            </Button>
+              Payment Details
+            </Typography>
+            <TableContainer
+              component={Paper}
+              style={{
+                borderRadius: "8px",
+                width: "100%",
+                maxHeight: "60vh",
+                overflowY: "auto",
+              }}
+            >
+              <Table style={{ tableLayout: "fixed", width: "100%" }}>
+                <TableHead>
+                  <TableRow
+                    sx={{
+                      background: "linear-gradient(to right, #6a11cb, #2575fc) ",
+                    }}
+                  >
+                    {[
+                      "Order ID",
+                      "Payment Type",
+                      "Payment Method",
+                      "Payment Date",
+                      "Amount Received",
+                    ].map((header) => (
+                      <TableCell
+                        key={header}
+                        sx={{
+                          textAlign: "left",
+                          color: "white !important",
+                          width: "500px !important",
+                          fontWeight: "bold",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: "25%",
+                        }}
+                      >
+                        {header}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {payments.map((payment, index) => (
+                    <TableRow key={index} hover>
+                      <TableCell
+                        sx={{
+                          textAlign: "left",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: "25%",
+                        }}
+                      >
+                        {order.orderId}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          textAlign: "left",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: "25%",
+                        }}
+                      >
+                        {payment.paymentType}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          textAlign: "left",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: "25%",
+                        }}
+                      >
+                        {payment.paymentMethod}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          textAlign: "left",
+                          maxWidth: "25%",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {new Date(payment.paymentDate).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          textAlign: "left",
+                          maxWidth: "25%",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {payment.amountReceived}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+
+          <Box mt={3}>
+            <Typography
+              variant="h6"
+              component="h2"
+              sx={{
+                color: "black !important",
+                paddingRight: "16px !important",
+                paddingLeft: "32px !important",
+                letterSpacing: "2px",
+              }}
+            >
+              Dispatched Items
+            </Typography>
+            <TableContainer
+              component={Paper}
+              style={{
+                borderRadius: "8px",
+                width: "100%",
+                maxHeight: "60vh",
+                overflowY: "auto",
+              }}
+            >
+              <Table style={{ tableLayout: "fixed", width: "100%" }}>
+                <TableHead>
+                  <TableRow
+                    sx={{
+                      background: "linear-gradient(to right, #6a11cb, #2575fc) ",
+                    }}
+                  >
+                    {[
+                      "Order ID",
+                      "Items Dispatched",
+                      "Courier Partner",
+                      "Docket Number",
+                      "Material Dispatched Date",
+                      "Amount",
+                    ].map((header) => (
+                      <TableCell
+                        key={header}
+                        sx={{
+                          textAlign: "left",
+                          color: "white !important",
+                          width: "500px !important",
+                          fontWeight: "bold",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: "25%",
+                        }}
+                      >
+                        {header}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {logistics.map((logistic, index) => (
+                    <TableRow key={index} hover>
+                      <TableCell
+                        sx={{
+                          textAlign: "left",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: "25%",
+                        }}
+                      >
+                        {order.orderId}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          textAlign: "left",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: "25%",
+                        }}
+                      >
+                        {logistic.itemsDispatched}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          textAlign: "left",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          maxWidth: "25%",
+                        }}
+                      >
+                        {logistic.courierPartnerDetails}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          textAlign: "left",
+                          maxWidth: "25%",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {logistic.docketNumber}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          textAlign: "left",
+                          maxWidth: "25%",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {new Date(logistic.materialDispatchedDate.$date).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          textAlign: "left",
+                          maxWidth: "25%",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {logistic.amount}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Box>
         </Box>
+        {/* below this test */}
       </Modal>
     </div>
   );
@@ -226,6 +577,7 @@ function ViewModal({ order, invoice }) {
 // Add PropTypes for validation
 ViewModal.propTypes = {
   order: PropTypes.shape({
+    oid: PropTypes.string.isRequired,
     orderId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     orderDate: PropTypes.string.isRequired,
     bookedBy: PropTypes.string.isRequired,

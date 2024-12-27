@@ -1,10 +1,11 @@
+const mongoose = require("mongoose"); // Add this line
 const Invoice = require("../Models/invoices");
 const Order = require("../Models/orders");
 const { v4: uuidv4 } = require("uuid");
 
 exports.createInvoice = async (req, res) => {
   try {
-    const invoices = req.body; // Array of invoice objects
+    const invoices = req.body; //arrray of invocie objs
 
     if (!Array.isArray(invoices)) {
       return res.status(400).json({ message: "Expected an array of invoices" });
@@ -15,12 +16,11 @@ exports.createInvoice = async (req, res) => {
     for (const invoiceData of invoices) {
       const { orderId, invoiceId, invoiceNumber, invoiceDate } = invoiceData;
 
-      // Check for missing required fields
+      //check for missing fields
       if (!orderId || !invoiceNumber || !invoiceDate) {
         return res.status(400).json({ message: "Missing required fields." });
       }
 
-      // Find the order by orderId
       const order = await Order.findOne({ orderId: orderId });
 
       if (!order) {
@@ -29,12 +29,11 @@ exports.createInvoice = async (req, res) => {
           .json({ message: `Order with ID ${orderId} not found.` });
       }
 
-      // Create a new invoice
       const newInvoice = new Invoice({
-        orderId: order._id, // ObjectId of the matched order
-        invoiceId: invoiceId || uuidv4(), // Generate unique ID if not provided
+        orderId: order._id,
+        invoiceId: invoiceId || uuidv4(),
         invoiceNumber,
-        invoiceDate: new Date(invoiceDate), // Convert to Date object
+        invoiceDate: new Date(invoiceDate),
       });
 
       const savedInvoice = await newInvoice.save();
@@ -76,11 +75,15 @@ exports.getInvoices = async (req, res) => {
 };
 
 exports.getInvoiceByOrderId = async (req, res) => {
+  const orderId = req.params.orderId;
+  const isObjectId = mongoose.Types.ObjectId.isValid(orderId);
+
   try {
-    const orderId = req.params.orderId;
-    const invoices = await Invoice.find({
-      orderId: mongoose.Types.ObjectId(orderId),
-    });
+    const invoices = await Invoice.find(
+      isObjectId
+        ? { orderId: new mongoose.Types.ObjectId(orderId) }
+        : { orderId: orderId }
+    );
 
     res.status(200).json(invoices);
   } catch (error) {
@@ -89,22 +92,6 @@ exports.getInvoiceByOrderId = async (req, res) => {
   }
 };
 
-exports.getInvoiceById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const invoice = await Invoice.findById(id).populate("orderId");
-
-    if (!invoice) {
-      return res.status(404).json({ message: "Invoice not found" });
-    }
-
-    res.status(200).json(invoice);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error fetching invoice", error: err.message });
-  }
-};
 exports.updateInvoice = async (req, res) => {
   try {
     const { id } = req.params;

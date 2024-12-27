@@ -14,7 +14,7 @@ const PaymentSchema = new mongoose.Schema(
     },
     paymentType: {
       type: String,
-      enum: ["Full Payment", "Part Payment", "Advanced", "Paid"],
+      enum: ["Full Payment", "Part Payment", "Advance", "Paid"],
       required: true,
     }, //radio button
     paymentDate: {
@@ -33,7 +33,7 @@ const PaymentSchema = new mongoose.Schema(
       type: String,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Payment", PaymentSchema);

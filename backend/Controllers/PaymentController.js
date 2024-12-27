@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Payment = require("../Models/payments");
 const Order = require("../Models/orders");
 
@@ -70,7 +71,6 @@ exports.createPayments = async (req, res) => {
   }
 };
 
-// Get all payments
 exports.getAllPayments = async (req, res) => {
   try {
     const payments = await Payment.find().populate("orderId");
@@ -82,25 +82,26 @@ exports.getAllPayments = async (req, res) => {
   }
 };
 
-// Get a specific payment by ID
-exports.getPaymentById = async (req, res) => {
+exports.getPaymentByOrderId = async (req, res) => {
+  const orderId = req.params.orderId;
+  const isObjectId = mongoose.Types.ObjectId.isValid(orderId);
+
   try {
-    const { id } = req.params;
-    const payment = await Payment.findById(id).populate("orderId");
+    const payments = await Payment.find(
+      isObjectId
+        ? { orderId: new mongoose.Types.ObjectId(orderId) }
+        : { orderId: orderId }
+    );
 
-    if (!payment) {
-      return res.status(404).json({ message: "Payment not found" });
-    }
-
-    res.status(200).json(payment);
-  } catch (err) {
+    res.status(200).json(payments);
+  } catch (error) {
+    console.error("Error fetching payments:", error);
     res
       .status(500)
-      .json({ message: "Error fetching payment", error: err.message });
+      .json({ message: "Error fetching payments", error: error.message });
   }
 };
 
-// Update a specific payment by ID
 exports.updatePayment = async (req, res) => {
   try {
     const { id } = req.params;
@@ -138,7 +139,6 @@ exports.updatePayment = async (req, res) => {
   }
 };
 
-// Delete a specific payment by ID
 exports.deletePayment = async (req, res) => {
   try {
     const { id } = req.params;
