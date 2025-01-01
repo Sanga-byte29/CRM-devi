@@ -75,10 +75,10 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Billing",
-    key: "billing",
+    name: "Product Management",
+    key: "product",
     icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
+    route: "/product-management",
     component: <Billing />,
   },
   {

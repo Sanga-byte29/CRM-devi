@@ -244,6 +244,13 @@ function ViewModal({ order, invoice }) {
                     sx={{
                       background: "linear-gradient(to right, #6a11cb, #2575fc) ",
                     }}
+                    // style={{
+                    //   background: "linear-gradient(to right, #6a11cb, #2575fc)",
+                    //   color: "#333",
+                    //   borderRadius: "8px",
+                    //   display: "flex",
+                    //   color: "white",
+                    // }}
                   >
                     {["Order ID", "Invoice ID", "Invoice Number", "Invoice Date"].map((header) => (
                       <TableCell

@@ -10,6 +10,8 @@ const CustomerRouter = require("./Routes/CustomerRouter");
 const InvoiceRouter = require("./Routes/InvoiceRouter");
 const PaymentRouter = require("./Routes/PaymentRouter");
 const LogisticRouter = require("./Routes/LogisticRouter");
+const AddProductRouter = require("./Routes/productRoutes/AddProductRouter");
+const ProuctCategoryRouter = require("./Routes/productRoutes/ProductCategoryRouter");
 
 const UserModel = require("./Models/User");
 const bcrypt = require("bcrypt");
@@ -85,6 +87,8 @@ app.use("/customers", CustomerRouter);
 app.use("/invoices", InvoiceRouter);
 app.use("/logistics", LogisticRouter);
 app.use("/payments", PaymentRouter);
+app.use("/addProduct", AddProductRouter);
+app.use("/addCategory", ProuctCategoryRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
