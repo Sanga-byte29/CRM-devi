@@ -25,6 +25,10 @@ import { styled } from "@mui/material/styles";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import AddProductModal from "modals/AddProductModal";
+import AddBulkProductModal from "modals/AddBulkProductModal";
+
+//v1
+import { useNavigate } from "react-router-dom";
 
 const StyledAddIcon = styled(AddIcon)(({ theme }) => ({
   fontSize: "3rem",
@@ -39,6 +43,12 @@ function ProductManangement() {
 
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
+  const navigate = useNavigate(); // Add this if it's missing in the relevant scope.
+
+  //add bulk product modal
+  const [openProductModal, setOpenProductModal] = useState(false);
+  const handleOpenProductModal = () => setOpenProductModal(true);
+  const handleCloseProductModal = () => setOpenProductModal(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -68,6 +78,32 @@ function ProductManangement() {
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
+  };
+
+  // v1
+
+  const handleEdit = (productId) => {
+    // console.log(productId);
+    navigate(`/addProduct/${productId}`);
+  };
+
+  //v2
+  const handleDelete = async (productId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    if (!confirmDelete) return;
+
+    try {
+      const response = await axios.delete(`http://localhost:8080/addProduct/${productId}`);
+      if (response.data.success) {
+        alert("Product deleted successfully!");
+        setProducts((prevProducts) => prevProducts.filter((product) => product._id !== productId));
+      } else {
+        alert("Failed to delete the product.");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      alert("An error occurred while deleting the product. Please try again.");
+    }
   };
 
   return (
@@ -108,9 +144,11 @@ function ProductManangement() {
                     background: "linear-gradient(to right, #6a11cb, #00c9ff)",
                     color: "white",
                   }}
+                  onClick={handleOpenProductModal}
                 >
                   Add Bulk Products
                 </Button>
+                <AddBulkProductModal open={openProductModal} onClose={handleCloseProductModal} />
               </div>
             </Grid>
           </Grid>
@@ -220,10 +258,13 @@ function ProductManangement() {
                       {new Date(product.createdAt).toLocaleDateString() || "N/A"}
                     </TableCell>
                     <TableCell style={{ textAlign: "center" }}>
-                      <IconButton>
+                      {/* <IconButton>
+                        <EditIcon />
+                      </IconButton> */}
+                      <IconButton onClick={() => handleEdit(product._id)}>
                         <EditIcon />
                       </IconButton>
-                      <IconButton>
+                      <IconButton onClick={() => handleDelete(product._id)}>
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>

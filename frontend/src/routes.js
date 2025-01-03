@@ -45,6 +45,7 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import Cover from "layouts/authentication/reset-password";
+import EditProduct from "layouts/billing/EditProduct";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -128,6 +129,13 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/authentication/reset-password",
     component: <Cover />,
+  },
+  {
+    // type: "collapse",
+    name: "Edit Product",
+    key: "edit-product",
+    route: "/addProduct/:productId",
+    component: <EditProduct />, // Your edit product component
   },
 ];
 
