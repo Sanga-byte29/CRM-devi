@@ -25,6 +25,7 @@ import { styled } from "@mui/material/styles";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import AddProductModal from "modals/AddProductModal";
+import AddBulkProductModal from "modals/AddBulkProductModal";
 
 const StyledAddIcon = styled(AddIcon)(({ theme }) => ({
   fontSize: "3rem",
@@ -36,9 +37,13 @@ function ProductManangement() {
   const [modalOpen, setModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [openProductModal, setOpenProductModal] = useState(false);
 
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
+
+  const handleOpenProductModal = () => setOpenProductModal(true);
+  const handleCloseProductModal = () => setOpenProductModal(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -108,9 +113,11 @@ function ProductManangement() {
                     background: "linear-gradient(to right, #6a11cb, #00c9ff)",
                     color: "white",
                   }}
+                  onClick={handleOpenProductModal}
                 >
                   Add Bulk Products
                 </Button>
+                <AddBulkProductModal open={openProductModal} onClose={handleCloseProductModal} />
               </div>
             </Grid>
           </Grid>

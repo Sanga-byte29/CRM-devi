@@ -15,6 +15,7 @@ import {
   Select,
   MenuItem,
   FormControl,
+  IconButton,
   InputLabel,
 } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -27,6 +28,7 @@ import ShowInvoice from "./ShowInvoice";
 import ShowLogistics from "./ShowLogistics";
 import ShowPayment from "./ShowPayment";
 import ViewModal from "modals/ViewModal";
+import EditIcon from "@mui/icons-material/Edit";
 import "./ShowTable.css";
 
 function OrderManagement() {
@@ -259,8 +261,12 @@ function OrderManagement() {
                           style={{
                             padding: "12px 16px",
                             flexGrow: 1,
+                            display: "flex",
                           }}
                         >
+                          <IconButton component={Link} to="/tables/order-form">
+                            <EditIcon />
+                          </IconButton>
                           <ViewModal
                             order={{
                               oid: order._id,
